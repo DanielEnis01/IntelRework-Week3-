@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Intel: Sustainability Through the Ages</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <img src="img/intel-header-logo.svg" alt="Intel Logo" class="logo" />
+    <p class="hero-eyebrow">Corporate Responsibility</p>
+  </header>
+
+  <section class="timeline-section">
+    <h2 class="timeline-heading">MILESTONES THAT MATTER</h2>
+
+    <div class="year-tabs" id="yearTabs"></div>
+
+    <div class="milestone-card" id="milestoneCard">
+      <div class="card-left">
+        <img class="card-img" id="cardImg" src="" alt="" />
+        <div class="ghost-year" id="ghostYear"></div>
+        <div class="card-tag" id="cardTag"></div>
+        <div class="card-title" id="cardTitle"></div>
+        <div class="card-meta" id="cardMeta"></div>
+      </div>
+      <div class="card-right">
+        <div class="card-counter" id="cardCounter"></div>
+        <div class="card-desc" id="cardDesc"></div>
+        <div class="progress-wrap">
+          <div class="progress-labels">
+            <span id="progressStart"></span>
+            <span id="progressEnd"></span>
+          </div>
+          <div class="progress-track">
+            <div class="progress-bar" id="progressBar"></div>
+          </div>
+        </div>
+        <div class="card-nav">
+          <button class="nav-btn" id="prevBtn" onclick="navigate(-1)">&#8249; Previous</button>
+          <button class="nav-btn" id="nextBtn" onclick="navigate(1)">Next &#8250;</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="dot-row" id="dotRow"></div>
+  </section>
+
+  <script>
+    const imgs = ["img/1.jpg","img/2.jpg","img/3.jpg","img/4.jpg","img/1.jpg","img/2.jpg","img/3.jpg","img/4.jpg","img/1.jpg"];
+
+    const milestones = [
+      { year:1968, tag:"ORIGINS",      title:"Intel Founded",       meta:"2 founders · $2.5M seed capital",                    img:"img/1.jpg", desc:"Gordon Moore and Robert Noyce establish Intel Corporation in Mountain View, California, planting the seed for a technology revolution." },
+      { year:1971, tag:"INNOVATION",   title:"First Microprocessor", meta:"4004 chip · 2,300 transistors",                     img:"img/2.jpg", desc:"Intel debuts the 4004, the world's first commercial microprocessor, igniting the microprocessor revolution and propelling the future of computing devices." },
+      { year:1978, tag:"ARCHITECTURE", title:"8086 Processor",       meta:"x86 architecture · 29,000 transistors",             img:"img/3.jpg", desc:"Launch of the 8086 processor, establishing the x86 architecture that drives countless PCs and servers in the modern era." },
+      { year:1985, tag:"PERFORMANCE",  title:"386 Processor",        meta:"32-bit · 275,000 transistors",                      img:"img/4.jpg", desc:"Intel introduces the 386 processor with 32-bit architecture, ushering in a new era of performance and multitasking for personal computers." },
+      { year:2006, tag:"ENVIRONMENT",  title:"Peak GHG Emissions",   meta:"Turning point for sustainability",                   img:"img/1.jpg", desc:"This year marks Intel's highest annual greenhouse gas emissions. It became a catalyst for major investment in chemical abatement, renewable energy, and energy-efficient manufacturing." },
+      { year:2021, tag:"STRATEGY",     title:"RISE Strategy",        meta:"Responsible · Inclusive · Sustainable · Enabling",  img:"img/2.jpg", desc:"Intel launches its RISE strategy and 2030 goals, aiming to drive industry-wide progress on climate action, water stewardship, and waste reduction." },
+      { year:2022, tag:"COMMITMENT",   title:"Net-Zero By 2040",     meta:"Scope 1 & 2 emissions · Global operations",         img:"img/3.jpg", desc:"Intel announces its commitment to achieve net-zero greenhouse gas emissions across its global operations by 2040, building on years of environmental initiatives." },
+      { year:2023, tag:"MILESTONE",    title:"Renewable Electricity", meta:"99% renewable · Worldwide",                        img:"img/4.jpg", desc:"The company achieves 99% renewable electricity usage worldwide, helping to drastically lower carbon emissions and driving progress toward long-term sustainability goals." },
+      { year:2024, tag:"LEADERSHIP",   title:"Sustainability Summit", meta:"Suppliers · Government · Industry leaders",        img:"img/1.jpg", desc:"Intel hosts its first Sustainability Summit, uniting suppliers, government officials, and industry leaders to collaborate on next-generation sustainable semiconductor manufacturing." }
+    ];
+
+    const FIRST = milestones[0].year;
+    const LAST  = milestones[milestones.length - 1].year;
+    let current = 0;
+
+    function render(idx) {
+      current = idx;
+      const m = milestones[idx];
+
+      document.querySelectorAll('.year-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+      document.querySelectorAll('.dot').forEach((d,i) => d.classList.toggle('active', i===idx));
+
+      document.getElementById('cardImg').src        = m.img;
+      document.getElementById('cardImg').alt        = m.title;
+      document.getElementById('ghostYear').textContent = m.year;
+      document.getElementById('cardTag').textContent   = m.tag;
+      document.getElementById('cardTitle').textContent = m.title;
+      document.getElementById('cardMeta').textContent  = m.meta;
+      document.getElementById('cardCounter').textContent = `${idx+1} / ${milestones.length}`;
+      document.getElementById('cardDesc').textContent  = m.desc;
+      document.getElementById('progressStart').textContent = FIRST;
+      document.getElementById('progressEnd').textContent   = LAST;
+
+      const pct = ((m.year - FIRST) / (LAST - FIRST)) * 100;
+      document.getElementById('progressBar').style.width = Math.max(pct, 6) + '%';
+
+      document.getElementById('prevBtn').disabled = idx === 0;
+      document.getElementById('nextBtn').disabled = idx === milestones.length - 1;
+    }
+
+    function navigate(dir) {
+      const next = current + dir;
+      if (next >= 0 && next < milestones.length) render(next);
+    }
+
+    const tabsEl = document.getElementById('yearTabs');
+    milestones.forEach((m,i) => {
+      const btn = document.createElement('button');
+      btn.className = 'year-tab';
+      btn.textContent = m.year;
+      btn.onclick = () => render(i);
+      tabsEl.appendChild(btn);
+    });
+
+    const dotsEl = document.getElementById('dotRow');
+    milestones.forEach((_,i) => {
+      const d = document.createElement('span');
+      d.className = 'dot';
+      d.onclick = () => render(i);
+      dotsEl.appendChild(d);
+    });
+
+    render(0);
+  </script>
+
+</body>
+</html>
